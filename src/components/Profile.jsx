@@ -48,7 +48,7 @@ const Profile = (props) => {
                 {occupation.map((elem, index) => {
                   return (
                     <Typography key={index} className='occu'>
-                      {elem}
+                    ✔ {elem}
                     </Typography>
                   );
                 })}

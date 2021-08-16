@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '10px 10px',
     maxWidth: '98%',
     borderRadius: '15px',
+    flexWrap: 'wrap',
   },
   formControl: {
     margin: theme.spacing(1),
