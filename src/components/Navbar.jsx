@@ -89,7 +89,7 @@ const NavBar = (props) => {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="Search…"
+              placeholder="Search Name"
               onChange={(e)=>{
                   props.setName(e.target.value)
 

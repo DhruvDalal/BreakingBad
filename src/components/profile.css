@@ -31,12 +31,26 @@
   margin-bottom: 10px;
   line-height: 70px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  flex-direction: row;
   border-radius: 26px;
   background: #d7c1c1;
   box-shadow: 5px 5px 10px #5f5555, -5px -5px 10px #ffffff;
   border-radius: 26px;
+}
+.head_div .btn{
+  text-decoration: none;
+  margin-left: 70px;
+  margin-bottom: 18px;
+}
+.head_div .name{
+  margin-right: 150px;
+  font-size: 4rem;
+  color: black;
+  height: 70px;
+  line-height: 70px;
+  font-family: 'Quicksand', sans-serif;
 }
 
 /* second div for photo and details*/

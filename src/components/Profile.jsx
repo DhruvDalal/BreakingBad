@@ -1,13 +1,13 @@
 import React from 'react';
 import './profile.css';
-import { Typography } from '@material-ui/core';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import { Link } from 'react-router-dom';
+import { Typography, Button } from '@material-ui/core';
 
 const Profile = (props) => {
   const id = props.match.params.id;
-  
   const charData = props.data;
   const pro = charData[id];
-  console.log(pro);
   const {
     name,
     img,
@@ -18,15 +18,18 @@ const Profile = (props) => {
     occupation,
     appearance,
   } = pro;
-  // console.log(name,img,nickname,status,birthday,portrayed);
-  
-
   const quotesdata = props.quotes;
-  // console.log(quotesdata);
 
   return (
     <div className='main_div'>
-      <div className='head_div'> {name}</div>
+      <div className='head_div'>
+        <Link className='btn' to={`/`}>
+          <Button variant='contained' color='primary'>
+            <ArrowBackIosRoundedIcon/> Go Back
+          </Button>
+        </Link>
+        <Typography className="name">{name}</Typography>
+      </div>
       <div className='details'>
         <div className='left'>
           <img src={img} alt={name} />
@@ -40,7 +43,7 @@ const Profile = (props) => {
               <span>Date Of Birth</span> : {birthday}
             </Typography>
             <Typography className='typo2'>
-              <span>Occupation  </span> :  
+              <span>Occupation </span> :
               <span>
                 {occupation.map((elem, index) => {
                   return (
@@ -68,19 +71,24 @@ const Profile = (props) => {
                 })}
               </span>
             </Typography>
-            <Typography className="typo2">
-            <span>Quotes </span> :
-            <span>
-            {
-                quotesdata.filter((val) => {
-                if(name === val.author){
-                  return val;
-                }
-                return null;
-            }).map((elem,index)=>{
-              return <Typography className="occu" key={index}>✔   {elem.quote}</Typography>
-            })
-            }</span>
+            <Typography className='typo2'>
+              <span>Quotes </span> :
+              <span>
+                {quotesdata
+                  .filter((val) => {
+                    if (name === val.author) {
+                      return val;
+                    }
+                    return null;
+                  })
+                  .map((elem, index) => {
+                    return (
+                      <Typography className='occu' key={index}>
+                        ✔ {elem.quote}
+                      </Typography>
+                    );
+                  })}
+              </span>
             </Typography>
           </div>
         </div>

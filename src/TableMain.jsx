@@ -1,22 +1,24 @@
-import React,{useState} from 'react';
-import { Link} from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { makeStyles } from '@material-ui/core/styles';
 import NavBar from './components/Navbar';
+import Pagination from './components/Pagination';
 import {
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
-  TablePagination,
   Paper,
   Button,
   Avatar,
   Grid,
   Typography,
 } from '@material-ui/core';
+import Status from './components/Status';
+import TblHead from './components/TblHead';
+import Season from './components/Season';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -27,10 +29,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '98%',
     borderRadius: '15px',
   },
-  tableHeaderCell: {
-    fontWeight: '600',
-    backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.getContrastText(theme.palette.primary.dark),
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
   nameCell: {
     fontWeight: 'bold',
@@ -38,21 +39,38 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '20px',
     justifyContent: 'center',
   },
-  btn:{
+  btn: {
     textDecoration: 'none',
   },
   eachRow: {
     borderTop: '0.10rem dashed blue',
 
-    '&:hover':{
+    '&:hover': {
       background: '#79cfe0',
       color: theme.palette.getContrastText('#79cfe0'),
-    }
+    },
   },
+  menu: {
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  filter:{
+    display:'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    maxHeight: '70px',
+    top: '15px',
+  },
+  filt:{
+    fontSize: '30px',
+    color: 'Blue'
+  }
 }));
+
 const TableMain = (props) => {
-  const data = props.data;
-  const [nameCh,setName] = useState("")
+  const data = props.data;  
+  const [nameCh, setName] = useState('');
+  const [status, setStatus] = useState('');
+  const [season, setSeason] = useState([]);
   // console.log(nameCh);
 
   const [page, setPage] = React.useState(0);
@@ -65,47 +83,56 @@ const TableMain = (props) => {
     setPage(0);
   };
 
-  
   const classes = useStyles();
   return (
     <>
-       <NavBar  setName = {setName}/>
-      <TablePagination
-        rowsPerPageOptions={[10, 31, 62]}
-        component='div'
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+      <NavBar setName={setName} />
+      <div className={classes.filter}>
+      <span className={classes.filt}>Filters: </span>
+      <Status val={status} setStatus={setStatus} />
+      <Season season={season} setSeason={setSeason} />
+      </div>
+      
+      <Pagination
+        pg={page}
+        rpp={rowsPerPage}
+        cnt={data.length}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
       />
       <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} aria-label='simple table'>
-          <TableHead stickyHeader aria-label='sticky table'>
-            <TableRow>
-              <TableCell className={classes.tableHeaderCell}>Name</TableCell>
-              <TableCell className={classes.tableHeaderCell}>
-                Occupation
-              </TableCell>
-              <TableCell className={classes.tableHeaderCell}>DOB</TableCell>
-              <TableCell className={classes.tableHeaderCell}>Status</TableCell>
-              <TableCell className={classes.tableHeaderCell}>
-                Know More..
-              </TableCell>
-            </TableRow>
-          </TableHead>
+          <TblHead />
           <TableBody>
-            {data.filter( (val) => {
-                if(nameCh === ""){
+            {data
+              .filter((val) => {
+                if (nameCh === '') {
                   return val;
-                }else if(val.name.toLowerCase().includes(nameCh.toLowerCase())){
-                    return val;
+                } else if (
+                  val.name.toLowerCase().includes(nameCh.toLowerCase())
+                ) {
+                  return val;
                 }
                 return 0;
-            })
+              })
+              .filter((val) => {
+                if (status === '' || status === 'All') {
+                  return val;
+                } else if (val.status === status) {
+                  return val;
+                }
+                return null;
+              }).filter((val)=>{
+                if (season.length === 0){
+                  return val;
+                }else if(season.sort().join(',') === val.appearance.sort().join(',')){
+                  return val;
+                }
+                return null
+              })
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row,index) => (
-                <TableRow key={row.char_id} className={classes.eachRow} >
+              .map((row, index) => (
+                <TableRow key={row.char_id} className={classes.eachRow}>
                   <TableCell className={classes.nameCell}>
                     <Grid container>
                       <Grid item lg={2}>
@@ -128,10 +155,17 @@ const TableMain = (props) => {
                   <TableCell>{row.birthday}</TableCell>
                   <TableCell>{row.status}</TableCell>
                   <TableCell>
-                  <Link className={classes.btn} to={row.char_id<=58?`/${(row.char_id)-1}`:`/profile/${((row.char_id)-1)-54}`}>
-                    <Button variant='contained' color='primary' >
-                      Know More.. <LaunchIcon />
-                    </Button>
+                    <Link
+                      className={classes.btn}
+                      to={
+                        row.char_id <= 58
+                          ? `/${row.char_id - 1}`
+                          : `/${row.char_id - 1 - 54}`
+                      }
+                    >
+                      <Button variant='contained' color='primary'>
+                        Know More.. <LaunchIcon />
+                      </Button>
                     </Link>
                   </TableCell>
                 </TableRow>
@@ -139,14 +173,12 @@ const TableMain = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 31, 62]}
-        component='div'
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+      <Pagination
+        pg={page}
+        rpp={rowsPerPage}
+        cnt={data.length}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
       />
     </>
   );
