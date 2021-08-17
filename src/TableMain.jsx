@@ -72,6 +72,32 @@ const TableMain = (props) => {
   const [nameCh, setName] = useState('');
   const [status, setStatus] = useState('');
   const [season, setSeason] = useState([]);
+  const rlData = data
+  .filter((val) => {
+    if (nameCh === '') {
+      return val;
+    } else if (
+      val.name.toLowerCase().includes(nameCh.toLowerCase())
+    ) {
+      return val;
+    }
+    return 0;
+  })
+  .filter((val) => {
+    if (status === '' || status === 'All') {
+      return val;
+    } else if (val.status === status) {
+      return val;
+    }
+    return null;
+  }).filter((val)=>{
+    if (season.length === 0){
+      return val;
+    }else if(season.sort().join(',') === val.appearance.sort().join(',')){
+      return val;
+    }
+    return null
+  });
   // console.log(nameCh);
 
   const [page, setPage] = React.useState(0);
@@ -97,7 +123,7 @@ const TableMain = (props) => {
       <Pagination
         pg={page}
         rpp={rowsPerPage}
-        cnt={data.length}
+        cnt={rlData.length}
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
       />
@@ -105,32 +131,7 @@ const TableMain = (props) => {
         <Table className={classes.table} aria-label='simple table'>
           <TblHead />
           <TableBody>
-            {data
-              .filter((val) => {
-                if (nameCh === '') {
-                  return val;
-                } else if (
-                  val.name.toLowerCase().includes(nameCh.toLowerCase())
-                ) {
-                  return val;
-                }
-                return 0;
-              })
-              .filter((val) => {
-                if (status === '' || status === 'All') {
-                  return val;
-                } else if (val.status === status) {
-                  return val;
-                }
-                return null;
-              }).filter((val)=>{
-                if (season.length === 0){
-                  return val;
-                }else if(season.sort().join(',') === val.appearance.sort().join(',')){
-                  return val;
-                }
-                return null
-              })
+            {rlData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow key={row.char_id} className={classes.eachRow}>
@@ -177,7 +178,7 @@ const TableMain = (props) => {
       <Pagination
         pg={page}
         rpp={rowsPerPage}
-        cnt={data.length}
+        cnt={rlData.length}
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
       />
