@@ -10,7 +10,9 @@
 ## Here is the Github repository link: [Breakingbad Project](https://github.com/DhruvDalal/BreakingBad)
 
 
-API documentation Link: [BreakingBad Documentation](https://breakingbadapi.com/documentation)
+### API documentation Link: [BreakingBad Documentation](https://breakingbadapi.com/documentation)
+
+
 |     use       |   Api         | 
 | ------------- |:-------------:|
 | characters    |    [API](https://breakingbadapi.com/api/characters)       | 
